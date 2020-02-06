@@ -37,6 +37,16 @@ const Member = ({ name, click }) => (
 )
 
 class Recursive extends Component {
+  constructor(props) {
+    super(props)
+
+
+    this.addChildren = this.addChildren.bind(this)
+    this.hasChildren = this.hasChildren.bind(this)
+    this.rebuildObject = this.rebuildObject.bind(this)
+  }
+
+
   rebuildObject(item, parentId, newChild) {
     if (item.id === parentId) {
       item.children.push(newChild)
@@ -53,10 +63,9 @@ class Recursive extends Component {
 
   addChildren(parent) {
     const newPerson = window.prompt('Add new person to family')
-    const tree = this.props.rootTree || this.props.tree
-    const deepTreeCopy = _.cloneDeep(tree)
+    const deepTreeCopy = _.cloneDeep(this.props.rootTree)
     const newChild = { name: newPerson, children: [], id: Math.random() }
-    const newTree = this.rebuildObject(deepTreeCopy, parent.id, newChild)
+    const newTree = this.rebuildObject(deepTreeCopy, this.props.tree.id, newChild)
 
     this.props.setList({ newTree })
   }
@@ -71,7 +80,7 @@ class Recursive extends Component {
 
     return (
       <Container>
-        <Member {...tree} click={() => this.addChildren(tree)} />
+        <Member {...tree} click={this.addChildren} />
         <ChildrenContainer>
           {
             tree.children.map((obj, i) => {
